@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Aurora from '../components/Aurora.astro';
 import { strings, defaultLang } from '../i18n/strings';
+import { base } from '../data/links';
 
 const t = strings[defaultLang];
 ---
@@ -13,6 +14,7 @@ const t = strings[defaultLang];
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{t.title}</title>
     <meta name="description" content={t.description} />
+    <link rel="icon" href={`${base}user-link.ico`} sizes="any" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
