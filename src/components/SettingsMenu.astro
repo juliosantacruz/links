@@ -1,0 +1,245 @@
+---
+import { strings, defaultLang, type StringKey } from '../i18n/strings';
+
+const t = strings[defaultLang];
+
+const groups: { name: string; label: StringKey; options: { value: string; label: StringKey | null; text?: string }[] }[] = [
+  {
+    name: 'view',
+    label: 'view',
+    options: [
+      { value: 'list', label: 'list' },
+      { value: 'bento', label: 'bento' },
+    ],
+  },
+  {
+    name: 'lang',
+    label: 'language',
+    options: [
+      { value: 'es', label: null, text: 'ES' },
+      { value: 'en', label: null, text: 'EN' },
+    ],
+  },
+  {
+    name: 'theme',
+    label: 'theme',
+    options: [
+      { value: 'light', label: 'light' },
+      { value: 'system', label: 'system' },
+      { value: 'dark', label: 'dark' },
+    ],
+  },
+];
+---
+
+<button
+  class="fab"
+  type="button"
+  popovertarget="settings"
+  aria-expanded="false"
+  aria-label={t.openSettings}
+  data-i18n-aria="openSettings"
+>
+  <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+</button>
+
+<div id="settings" class="panel" popover>
+  <p class="title" data-i18n="settings">{t.settings}</p>
+  {
+    groups.map((group) => (
+      <fieldset>
+        <legend data-i18n={group.label}>{t[group.label]}</legend>
+        <div class="segmented">
+          {group.options.map((option) => (
+            <label>
+              <input type="radio" name={group.name} value={option.value} />
+              <span data-i18n={option.label ?? undefined}>{option.label ? t[option.label] : option.text}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    ))
+  }
+</div>
+
+<style>
+  .fab {
+    position: fixed;
+    z-index: 10;
+    right: max(16px, calc((100vw - var(--max-width)) / 2 + 16px));
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    box-shadow: var(--shadow-hover);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: scale 0.15s ease;
+  }
+
+  .fab:active {
+    scale: 0.94;
+  }
+
+  .fab:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  /* Hamburguesa → X */
+  .bars {
+    position: relative;
+    width: 20px;
+    height: 14px;
+  }
+
+  .bars span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      translate 0.25s ease,
+      rotate 0.25s ease,
+      opacity 0.2s ease;
+  }
+
+  .bars span:nth-child(1) { top: 0; }
+  .bars span:nth-child(2) { top: 6px; }
+  .bars span:nth-child(3) { top: 12px; }
+
+  .fab[aria-expanded='true'] .bars span:nth-child(1) {
+    translate: 0 6px;
+    rotate: 45deg;
+  }
+
+  .fab[aria-expanded='true'] .bars span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .fab[aria-expanded='true'] .bars span:nth-child(3) {
+    translate: 0 -6px;
+    rotate: -45deg;
+  }
+
+  /* Panel */
+  .panel {
+    position: fixed;
+    inset: auto;
+    right: max(16px, calc((100vw - var(--max-width)) / 2 + 16px));
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    width: min(280px, calc(100vw - 32px));
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    background: var(--panel);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    box-shadow: var(--shadow-hover);
+    color: var(--text);
+    transform-origin: bottom right;
+    opacity: 0;
+    scale: 0.85;
+    transition:
+      opacity 0.2s ease,
+      scale 0.2s ease,
+      display 0.2s allow-discrete,
+      overlay 0.2s allow-discrete;
+  }
+
+  .panel:popover-open {
+    opacity: 1;
+    scale: 1;
+  }
+
+  @starting-style {
+    .panel:popover-open {
+      opacity: 0;
+      scale: 0.85;
+    }
+  }
+
+  .title {
+    margin: 0 0 12px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.0625rem;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  fieldset + fieldset {
+    margin-top: 14px;
+  }
+
+  legend {
+    padding: 0;
+    margin-bottom: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .segmented {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 14px;
+    background: var(--chip);
+  }
+
+  .segmented label {
+    flex: 1;
+    position: relative;
+  }
+
+  .segmented input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .segmented span {
+    display: block;
+    padding: 9px 6px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .segmented input:checked + span {
+    background: var(--accent-bg);
+    color: var(--accent-text);
+  }
+
+  .segmented input:focus-visible + span {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel,
+    .bars span {
+      transition: none;
+    }
+  }
+</style>

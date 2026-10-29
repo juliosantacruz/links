@@ -1,0 +1,99 @@
+:root {
+  --max-width: 700px;
+  --radius: 18px;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  /* Tema claro */
+  color-scheme: light;
+  --bg: #cbc3d6;
+  --c1: #f5b971;
+  --c2: #ee8a4f;
+  --c3: #e86f6a;
+  --c4: #b893d6;
+  --text: #1b1a22;
+  --text-muted: rgb(27 26 34 / 0.68);
+  --glass: rgb(255 255 255 / 0.58);
+  --glass-border: rgb(255 255 255 / 0.7);
+  --chip: rgb(255 255 255 / 0.75);
+  --panel: rgb(255 255 255 / 0.8);
+  --accent-bg: #1b1a22;
+  --accent-text: #ffffff;
+  --accent-chip: rgb(255 255 255 / 0.14);
+  --shadow: 0 6px 20px -8px rgb(70 35 20 / 0.28);
+  --shadow-hover: 0 14px 32px -10px rgb(70 35 20 / 0.4);
+  --focus: #1b1a22;
+  --grain-opacity: 0.05;
+}
+
+/* Tema oscuro: por sistema (si no se forzó claro) o forzado */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #0d0d14;
+    --c1: #3b2a8f;
+    --c2: #7b3fb8;
+    --c3: #1f7a7a;
+    --c4: #8a2f6b;
+    --text: #f2f1f7;
+    --text-muted: rgb(242 241 247 / 0.65);
+    --glass: rgb(22 20 34 / 0.5);
+    --glass-border: rgb(255 255 255 / 0.1);
+    --chip: rgb(255 255 255 / 0.08);
+    --panel: rgb(22 20 34 / 0.85);
+    --accent-bg: #f2f1f7;
+    --accent-text: #14131c;
+    --accent-chip: rgb(0 0 0 / 0.08);
+    --shadow: 0 6px 20px -8px rgb(0 0 0 / 0.6);
+    --shadow-hover: 0 14px 32px -10px rgb(0 0 0 / 0.75);
+    --focus: #c9b8ff;
+    --grain-opacity: 0.07;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0d0d14;
+  --c1: #3b2a8f;
+  --c2: #7b3fb8;
+  --c3: #1f7a7a;
+  --c4: #8a2f6b;
+  --text: #f2f1f7;
+  --text-muted: rgb(242 241 247 / 0.65);
+  --glass: rgb(22 20 34 / 0.5);
+  --glass-border: rgb(255 255 255 / 0.1);
+  --chip: rgb(255 255 255 / 0.08);
+  --panel: rgb(22 20 34 / 0.85);
+  --accent-bg: #f2f1f7;
+  --accent-text: #14131c;
+  --accent-chip: rgb(0 0 0 / 0.08);
+  --shadow: 0 6px 20px -8px rgb(0 0 0 / 0.6);
+  --shadow-hover: 0 14px 32px -10px rgb(0 0 0 / 0.75);
+  --focus: #c9b8ff;
+  --grain-opacity: 0.07;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.35s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

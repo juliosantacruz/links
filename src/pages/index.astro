@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import Avatar from '../components/Avatar.astro';
+import LinkCard from '../components/LinkCard.astro';
+import SettingsMenu from '../components/SettingsMenu.astro';
+import { links, base } from '../data/links';
+import { strings, defaultLang } from '../i18n/strings';
+
+const t = strings[defaultLang];
+---
+
+<Base>
+  <main>
+    <header>
+      <Avatar name={t.name} src={`${base}avatar.jpeg`} />
+      <h1 data-i18n="name">{t.name}</h1>
+      <p data-i18n="tagline">{t.tagline}</p>
+    </header>
+
+    <nav class="links" aria-label="Links">
+      {links.map((link) => <LinkCard link={link} />)}
+    </nav>
+  </main>
+
+  <SettingsMenu />
+</Base>
+
+<style>
+  main {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: calc(56px + env(safe-area-inset-top)) 16px calc(120px + env(safe-area-inset-bottom));
+  }
+
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  h1 {
+    margin: 18px 0 4px;
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    margin: 0;
+    max-width: 28ch;
+    color: var(--text-muted);
+    font-size: 0.975rem;
+  }
+
+  .links {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  :global(html[data-view='bento']) .links {
+    grid-template-columns: repeat(2, 1fr);
+  }
+</style>

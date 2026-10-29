@@ -1,0 +1,96 @@
+---
+import '../styles/global.css';
+import Aurora from '../components/Aurora.astro';
+import { strings, defaultLang } from '../i18n/strings';
+
+const t = strings[defaultLang];
+---
+
+<!doctype html>
+<html lang={defaultLang} data-view="list">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{t.title}</title>
+    <meta name="description" content={t.description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap"
+    />
+    <!-- Aplica preferencias antes del primer pintado para evitar parpadeo -->
+    <script is:inline>
+      (function () {
+        var p = {};
+        try {
+          p = JSON.parse(localStorage.getItem('links:prefs')) || {};
+        } catch (e) {}
+        var d = document.documentElement;
+        d.lang = p.lang || ((navigator.language || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'es');
+        d.dataset.view = p.view === 'bento' ? 'bento' : 'list';
+        if (p.theme === 'light' || p.theme === 'dark') d.dataset.theme = p.theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <Aurora />
+    <slot />
+    <script is:inline define:vars={{ dict: strings }}>
+      const d = document.documentElement;
+      const KEY = 'links:prefs';
+      const read = () => {
+        try {
+          return JSON.parse(localStorage.getItem(KEY)) || {};
+        } catch {
+          return {};
+        }
+      };
+      const save = (key, value) => {
+        try {
+          localStorage.setItem(KEY, JSON.stringify({ ...read(), [key]: value }));
+        } catch {}
+      };
+
+      const applyLang = (lang) => {
+        const t = dict[lang] || dict.es;
+        d.lang = lang;
+        document.title = t.title;
+        document.querySelector('meta[name="description"]')?.setAttribute('content', t.description);
+        document.querySelectorAll('[data-i18n]').forEach((el) => (el.textContent = t[el.dataset.i18n]));
+        document.querySelectorAll('[data-i18n-aria]').forEach((el) => el.setAttribute('aria-label', t[el.dataset.i18nAria]));
+      };
+
+      const apply = {
+        view(value) {
+          const run = () => (d.dataset.view = value);
+          const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+          document.startViewTransition && !reduce ? document.startViewTransition(run) : run();
+        },
+        lang: applyLang,
+        theme(value) {
+          if (value === 'system') delete d.dataset.theme;
+          else d.dataset.theme = value;
+        },
+      };
+
+      // El HTML viene en español; traducir antes de pintar si hace falta
+      if (d.lang !== 'es') applyLang(d.lang);
+
+      const current = { view: d.dataset.view, lang: d.lang, theme: d.dataset.theme || 'system' };
+      for (const [name, value] of Object.entries(current)) {
+        const radio = document.querySelector(`#settings input[name="${name}"][value="${value}"]`);
+        if (radio) radio.checked = true;
+      }
+
+      const panel = document.getElementById('settings');
+      const fab = document.querySelector('[popovertarget="settings"]');
+      panel.addEventListener('change', (e) => {
+        const { name, value } = e.target;
+        apply[name]?.(value);
+        save(name, value);
+      });
+      panel.addEventListener('toggle', (e) => fab.setAttribute('aria-expanded', String(e.newState === 'open')));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,105 @@
+---
+// Fondo: anillos de color que nacen en el centro y se expanden hacia afuera,
+// uno tras otro, bajo un blur fuerte. Los colores salen de --c1..--c4 (tema).
+---
+
+<div class="aurora" aria-hidden="true">
+  <div class="core"></div>
+  <div class="ring" style="--c: var(--c1); --delay: 0s"></div>
+  <div class="ring" style="--c: var(--c2); --delay: -4.5s"></div>
+  <div class="ring" style="--c: var(--c3); --delay: -9s"></div>
+  <div class="ring" style="--c: var(--c4); --delay: -13.5s"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<style>
+  .aurora,
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .aurora {
+    overflow: hidden;
+    background: var(--bg);
+    filter: blur(60px) saturate(1.1);
+    transition: background 0.4s ease;
+  }
+
+  .core,
+  .ring {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    width: 150vmax;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    translate: -50% -50%;
+  }
+
+  .core {
+    width: 70vmax;
+    background: radial-gradient(circle, var(--c2) 0%, transparent 65%);
+    animation: core 18s ease-in-out infinite;
+  }
+
+  .ring {
+    background: radial-gradient(circle, transparent 20%, var(--c) 42%, transparent 66%);
+    opacity: 0;
+    animation: expand 18s linear infinite;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes expand {
+    0% {
+      scale: 0.05;
+      opacity: 0;
+    }
+    15% {
+      opacity: 0.9;
+    }
+    70% {
+      opacity: 0.6;
+    }
+    100% {
+      scale: 1;
+      opacity: 0;
+    }
+  }
+
+  @keyframes core {
+    0%,
+    100% {
+      scale: 1;
+      filter: hue-rotate(0deg);
+    }
+    50% {
+      scale: 1.2;
+      filter: hue-rotate(40deg);
+    }
+  }
+
+  .grain {
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .core,
+    .ring {
+      animation: none;
+    }
+
+    .ring {
+      opacity: 0.7;
+      scale: calc(0.3 + var(--i, 0) * 0.2);
+    }
+
+    .ring:nth-of-type(2) { --i: 0; }
+    .ring:nth-of-type(3) { --i: 1; }
+    .ring:nth-of-type(4) { --i: 2; }
+    .ring:nth-of-type(5) { --i: 3; }
+  }
+</style>
